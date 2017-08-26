@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="http://dimplejs.org/dist/dimple.v2.0.0.min.js"></script>
+
+    <style>
+        h2 {
+            text-align: center;
+            color: black;
+            background-color: white;
+        }
+        
+        body {
+            width: 960px;
+            margin: 0 auto;
+        }
+
+        rect.dimple-series-0.dimple-bar.dimple-all {
+            fill: #98AFC7;}
+
+        text {
+            font-size: 14px;
+            color: black;
+            font-family: sans-serif;}
+
+        svg {font-size: 30px;}
+
+        .dimple-axis text {
+                font-family: sans-serif;
+                font-size: 25px;
+        
+
+    </style>
+
+    <script type="text/javascript">
+        function draw1(data) {
+
+            /*
+              D3.js setup code
+            */
+            "use strict";
+            var margin = 75,
+                width = 1200 - margin,
+                height = 550 - margin;
+            d3.select("body")
+                .append("h2")
+                .text("Titanic Passenger Survival by Gender")
+              
+
+            var svg = d3.select("body")
+                .append("svg")
+                .attr("width", width)
+                .attr("height", height)
+                .append('g')
+                .attr('class', 'chart');
+
+            svg.selectAll("explanatory_text")
+                .data(["The ship,Titanic, sank and killed 1,502 out of 2224 passengers and crew during its maiden voyage. The data analysis", "and visualization of the dataset shows that women have a significantly higher chance of survival than men."])
+                .enter()
+                .append("text")
+                .attr("x", 100)
+                .attr("y", function(d, i) {
+                    return 30 + i * 16;
+                    
+                })
+                .text(function(d) {
+                    return d;
+                });
+        /*
+        Dimple code
+        */
+            // create chart
+            var myChart = new dimple.chart(svg, data);
+            myChart.setBounds(80, 100, width - 400, height - 200);
+            var y = myChart.addMeasureAxis("y", "var");
+            data.forEach(function(d) {
+                d['var'] = d['%Survived'];
+            });
+            var label = 'Survival %';
+            y.title = label;
+            var myAxis = myChart.addCategoryAxis("x", ["Gender"]);
+            myAxis.title = "Gender";
+            myAxis.addOrderRule(['Female', 'Male']);
+
+            // add series
+            var mySeries = myChart.addSeries(null, dimple.plot.bar);
+            
+            myChart.draw();
+
+        };
+
+            function draw2(data) {
+
+            /*
+              D3.js setup code
+            */
+            "use strict";
+            var margin = 75,
+                width = 1200 - margin,
+                height = 550 - margin;
+            d3.select("body")
+                .append("h2")
+                .text("Titanic Passenger Survival by Class and Gender")
+                .style('color', 'black')
+                .style('backgroud-color', 'white');
+
+            var svg = d3.select("body")
+                .append("svg")
+                .attr("width", width)
+                .attr("height", height)
+                .append('g')
+                .attr('class', 'chart');
+
+            svg.selectAll("explanatory_text")
+                .data(["Higher class passengers have a better chance of survival on titanic. More than class, gender played a significant role in survival.", "Females in upper class were almost guaranteed to survive, where as males in lower class have minimal chance of survival."])
+                .enter()
+                .append("text")
+                .attr("x", 100)
+                .attr("y", function(d, i) {
+                    return 30 + i * 16;
+                })
+                .style("font-size", "14px")
+                .style("color", "Black")
+                .style("font-family", "sans-serif")
+                .text(function(d) {
+                    return d;
+                });
+                /*
+        Dimple code
+        */
+            // Chart creation
+            var myChart = new dimple.chart(svg, data);
+            myChart.setBounds(80, 100, width - 400, height - 200);
+            var y = myChart.addMeasureAxis("y", "var");
+            data.forEach(function(d) {
+                d['var'] = d['%Survived'];
+            });
+             var label = 'Survival %';
+            y.title = label;
+            var myAxis = myChart.addCategoryAxis("x", ["Class", "Gender"]);
+            myAxis.title = "Passenger Class";
+            myAxis.addOrderRule(['Lower Class', 'Middle Class', 'Upper Class']);
+
+             // Color assignments
+            myChart.assignColor("Female", "#ECC5C0");
+            myChart.assignColor("Male", "#98AFC7");
+            
+            // add series and legend
+            var mySeries = myChart.addSeries('Gender', dimple.plot.bar);
+            var myLegend = myChart.addLegend(800, 120, 100, 100, "right");
+
+             // Display legend
+            myLegend._getEntries = function() {
+                var orderedValues = ["Female", "Male"];
+                var legendKey = {
+                    "Female": "Female",
+                    "Male": "Male" 
+                }; 
+                  var entries = [];
+                orderedValues.forEach(function(v) {
+                    entries.push({
+                        key: legendKey[v],
+                        fill: myChart.getColor(v).fill,
+                        stroke: myChart.getColor(v).stroke,
+                        opacity: myChart.getColor(v).opacity,
+                        series: [mySeries],
+                        aggField: [v]
+                    });
+                }, this);
+                return entries; 
+            }; 
+            
+            myChart.draw();
+
+        }     
+        
+    </script>
+</head>
+
+<body>
+
+    <script type="text/javascript">
+        /*
+            Use D3 (not dimple.js) to load the CSVfile
+            and pass the contents of it to the draw function
+            */
+        d3.csv("titanic_class1.csv", draw1);
+        d3.csv("titanic_class2.csv", draw2);
+    </script>
+</body>
+
+</html>
