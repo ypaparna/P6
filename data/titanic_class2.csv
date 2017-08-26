@@ -1,0 +1,7 @@
+Pclass,Class,Gender,Survival_rate,%Survived
+1,Lower Class,Male,0.135446686,13.54466859
+2,Middle Class,Male,0.157407407,15.74074074
+3,Upper Class,Male,0.368852459,36.8852459
+1,Lower Class,Female,0.5,50
+2,Middle Class,Female,0.921052632,92.10526316
+3,Upper Class,Female,0.968085106,96.80851064
